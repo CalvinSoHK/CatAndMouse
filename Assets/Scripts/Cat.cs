@@ -5,6 +5,18 @@ public class Cat : MonoBehaviour {
 
     public Transform mouse;
     public Transform death;
+    AudioSource audio;
+    float audioTimer = 0;
+
+    void Start()
+    {
+        audio = GetComponent<AudioSource>();
+    }
+
+    void Update()
+    {
+        audioTimer += Time.deltaTime;
+    }
 	
 	// Update is called once per frame
 	void FixedUpdate () {
@@ -21,10 +33,14 @@ public class Cat : MonoBehaviour {
             Debug.DrawRay(transform.position, transform.forward * 100);
             if (Physics.Raycast(catRay, out catRayHitInfo, 100f))
             {
-                Debug.Log(catRayHitInfo.collider.tag);
+                //Debug.Log(catRayHitInfo.collider.tag);
                 if(catRayHitInfo.collider.tag == "Mouse" && catRayHitInfo.distance < 70f)
                 {
-                    if(catRayHitInfo.distance < 8f)
+                    if(audioTimer > 2f)
+                    {
+                        audio.Play();
+                    }
+                    if (catRayHitInfo.distance < 8f)
                     {
                         Destroy(catRayHitInfo.collider.gameObject);
                         Instantiate(death, transform.position + transform.forward * 8, Quaternion.identity);
